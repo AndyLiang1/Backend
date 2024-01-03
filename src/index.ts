@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import services from './services/services';
 import { IUser } from './models/User';
 import { UserController } from './controllers/UserController';
+import errorHandleMiddleware from "./middlewares/ErrorHandlingMiddleware"
 const port = 3000;
 
 mongoose.connect('mongodb://127.0.0.1:27017/test').then(() => {
@@ -33,6 +34,8 @@ const startServer = (): void => {
 
     const userController = new UserController();
     userController.initRoutes(apiRouter);
+
+    app.use(errorHandleMiddleware)
 
     app.listen(port, () => {
         console.log(`Now listening on port ${port}`);

@@ -29,3 +29,16 @@ yarn-error.log*
 
 # Ignore built ts files
 dist/**/*
+
+# Coverage reports
+coverage
+
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp

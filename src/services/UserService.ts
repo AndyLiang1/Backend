@@ -3,12 +3,17 @@ import { UserModel, IUser } from '../models/User';
 import config from '../config/config';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { ProjectError } from '../errors/error';
 
 export class UserService {
     constructor(private userRepo: UserRepo) {}
 
-    public async signup(user: Partial<IUser>) {
+    public async signup(user: IUser) {
         try {
+            const userWithEmail = await this.getByEmail(user.email);
+            if (userWithEmail) {
+                throw new ProjectError({statusCode: 409, message: 'Email exists already' });
+            }
             return this.create(user);
         } catch(err) {
             throw err
@@ -19,13 +24,14 @@ export class UserService {
         try {
             const userWithEmail = await this.getByEmail(user.email);
             if (userWithEmail == null) {
-                throw new Error('Invalid login');
+                throw new ProjectError({statusCode: 404, message: 'Invalid login' });
             }
 
             const passwordMatches = bcrypt.compareSync(user.password, userWithEmail.password);
 
             if (!passwordMatches) {
-                throw new Error('Invalid login');
+                throw new ProjectError({statusCode: 401, message: 'Invalid login' });
+
             }
             const accessToken = this.createAccessToken(userWithEmail)
 
@@ -50,7 +56,7 @@ export class UserService {
             );
             return accessToken;
         } catch (error) {
-            throw new Error(`Could not create token: ${error}`);
+            throw new ProjectError({statusCode: 400, message: `Could not create token: ${error}`});
         }
     }
 

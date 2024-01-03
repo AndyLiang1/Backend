@@ -6,44 +6,37 @@ export class UserController {
 
     constructor() {
         this.router = express.Router();
-        this.router.post('/signup', this.signUp.bind(this));
+        this.router.post('/signup', this.signup.bind(this));
         this.router.post('/login', this.login.bind(this));
     }
 
     public initRoutes(apiRouter: express.Router) {
-        apiRouter.use('/users', this.router);
+        apiRouter.use('/auth', this.router);
     }
 
-    private async signUp(req: express.Request, res: express.Response, next: express.NextFunction) {
+    private async signup(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
-            console.log(req.body)
             const hashedPassword = bcrypt.hashSync(req.body.password);
             const userToCreate = {
                 email: req.body.email as string,
                 password: hashedPassword
             };
-            const createdUser = await services.userService.create(userToCreate);
-            res.json(createdUser);
+            await services.userService.signup(userToCreate);
+            res.status(200).json("User created successfully!");
         } catch (err) {
-            next(err);
+            if(err instanceof Error)  return res.status(400).json(err.message)
+            res.status(400).json(err)   
         }
     }
 
     private async login(req: express.Request, res: express.Response, next: express.NextFunction) {
         try {
-              const user = await services.userService.getByEmail(req.body.email);
-              if (user) {
-                const passwordMatches = bcrypt.compareSync(
-                  req.body.password,
-                  user.password
-                );
-                if (passwordMatches) {
-                  return res.sendStatus(200);
-                }
-              }
-              res.sendStatus(400);
+            const userData = req.body;
+            const response = await services.userService.login(userData);
+            res.status(200).json(response);
         } catch (err) {
-            next(err);
+            if(err instanceof Error)  return res.status(400).json(err.message)
+            res.status(400).json(err)   
         }
     }
 }

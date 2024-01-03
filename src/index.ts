@@ -22,6 +22,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/test').then(() => {
 
 const startServer = (): void => {
     const app: Express = express();
+    app.use(express.json())
 
     app.get('/', (req: Request, res: Response) => {
         res.send('Hello world!!!');

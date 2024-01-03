@@ -10,4 +10,4 @@ How to run the code:
 5. Play around using postman
 6. http://localhost:3000/api/auth/signup, http://localhost:3000/api/auth/login, http://localhost:3000/api/notes/, http://localhost:3000/api/notes/ etc. 
 
-I want to note that for the rate limit functionality, we could use Redis.
+I want to note that for the rate limit functionality, we could use Redis. As I built this from scratch, I spent around 8 hours already implementing all the CRUD functionality and implenting unit tests while adhering to good coding principles. Thank you for revieiwing this application. I would love to learn how I could improve! 

@@ -1,7 +1,7 @@
-import {User, IUser} from '../models/User'
+import {UserModel, IUser} from '../models/User'
 
 export class UserRepo {
-    constructor (private model: typeof User) {
+    constructor (private model: typeof UserModel) {
 
     }
 

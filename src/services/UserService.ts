@@ -12,7 +12,7 @@ export class UserService {
         try {
             const userWithEmail = await this.getByEmail(user.email);
             if (userWithEmail) {
-                throw new ProjectError({statusCode: 409, message: 'Email exists already' });
+                throw new ProjectError({statusCode: 409, message: 'Email already exists.' });
             }
             return this.create(user);
         } catch(err) {

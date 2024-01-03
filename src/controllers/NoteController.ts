@@ -83,22 +83,9 @@ export class NoteController {
         }
     }
     private async share(req: any, res: express.Response, next: express.NextFunction) {
-        try {
-            const NoteData = req.body;
-            const response = 'await services.noteService.delete(NoteData)';
-            res.status(200).json(response);
-        } catch (err) {
-            next(err)
-
-        }
+        // not implemented, but the idea is to use the allowedId field in the notes, then this function becomes trivial 
     }
     private async search(req: any, res: express.Response, next: express.NextFunction) {
-        try {
-            const NoteData = req.body;
-            const response = 'await services.noteService.delete(NoteData);'
-            res.status(200).json(response);
-        } catch (err) {
-            next(err)
-        }
+        // not implemented 
     }
 }

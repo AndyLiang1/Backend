@@ -1,11 +1,8 @@
-import express from 'express';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import bcrypt from 'bcryptjs';
-import { UserController } from '../../../src/controllers/UserController';
-import services from '../../../src/services/services';
-import { IUser, UserModel } from '../../../src/models/User';
+import { UserModel } from '../../../src/models/User';
 import { app } from '../../mocks/AppMock';
 
 const ENDPOINT = '/api/auth/signup'
@@ -42,7 +39,6 @@ describe('api/auth/signup test', () => {
             .send(testUser)
             .expect(200)
 
-        console.log(`body test ${res.body}`)
         const fetchedUser = await UserModel.findOne({email: testUser.email})
         
         expect(fetchedUser?.email).toEqual(testUser.email)
@@ -73,7 +69,8 @@ describe('api/auth/signup test', () => {
             .post(ENDPOINT)
             .send(testUser2)
             .expect(409)
-        expect(res.body).toBe("Error: Email already exists.")
+
+        expect(res.body).toEqual("Error: Email already exists.")
         
     })
 })

@@ -4,20 +4,11 @@ import services from './services/services';
 import { IUser } from './models/User';
 import { UserController } from './controllers/UserController';
 import errorHandleMiddleware from "./middlewares/ErrorHandlingMiddleware"
+import { NoteController } from './controllers/NoteController';
 const port = 3000;
 
 mongoose.connect('mongodb://127.0.0.1:27017/test').then(() => {
     console.log('Connected to mongo');
-    // const newUser = {
-    //     email: 'user@example.com',
-    //     password: 'password123',
-    //   }
-    // services.userService.create(newUser).then(() => {
-    //     services.userService.getByEmail("user@example.com").then((user) => {
-    //         console.log(user)
-    //     })
-    // })
-
     startServer();
 });
 
@@ -34,6 +25,8 @@ const startServer = (): void => {
 
     const userController = new UserController();
     userController.initRoutes(apiRouter);
+    const noteController = new NoteController();
+    noteController.initRoutes(apiRouter);
 
     app.use(errorHandleMiddleware)
 

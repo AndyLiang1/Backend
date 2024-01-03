@@ -1,5 +1,6 @@
+import { ProjectError } from '../errors/error';
 import { NoteModel, INote } from '../models/Note';
-
+import mongoose from 'mongoose';
 export class NoteRepo {
     constructor(private model: typeof NoteModel) {}
 
@@ -9,36 +10,72 @@ export class NoteRepo {
     }
 
     public async getAll(userId: string) {
-        return this.model
-            .find({
-                $or: [{ owner: userId }, { allowedIds: userId }]
-            })
-            .lean();
+        const notes: Partial<INote>[] = await this.model.find({
+            $or: [
+                { owner: new mongoose.Types.ObjectId(userId) },
+                { allowedIds: new mongoose.Types.ObjectId(userId) }
+            ]
+        });
+        notes.map((note) => delete note.owner);
+
+        return notes;
     }
 
     public async getOne(userId: string, noteId: string) {
-        return this.model
+        let note: Partial<INote> | null = await this.model
             .findOne({
-                _id: noteId,
-                $or: [{ owner: userId }, { allowedIds: userId }]
+                _id: new mongoose.Types.ObjectId(noteId),
+                $or: [
+                    { owner: new mongoose.Types.ObjectId(userId) },
+                    { allowedIds: new mongoose.Types.ObjectId(userId) }
+                ]
             })
             .lean();
+        if (!note)
+            throw new ProjectError({
+                statusCode: 404,
+                message: 'Note not found'
+            });
+
+        delete note.owner;
+
+        return note;
     }
 
-    public async update(userId: string, noteId: string, updatedFields: Partial<INote>) {
-        const updatedNote = await this.model.findOneAndUpdate(
-            { _id: noteId, owner: userId },
-            {
-                $set: {
-                    message: updatedFields
-                }
-            },
-            { new: true }
-        ).lean();
+    public async update(
+        userId: string,
+        noteId: string,
+        updatedFields: Partial<INote>
+    ) {
+        const updatedNote: Partial<INote> | null = await this.model
+            .findOneAndUpdate(
+                {
+                    _id: new mongoose.Types.ObjectId(noteId),
+                    owner: new mongoose.Types.ObjectId(userId)
+                },
+                {
+                    $set: {
+                        message: updatedFields.message
+                    }
+                },
+                { new: true }
+            )
+            .lean();
+        if (!updatedNote)
+            throw new ProjectError({
+                statusCode: 404,
+                message: 'Note not found'
+            });
+        delete updatedNote.owner;
+
         return updatedNote;
     }
 
     public async delete(userId: string, noteId: string) {
-        return this.model.findOneAndDelete({ _id: noteId, owner: userId });
+        await this.model.findOneAndDelete({
+            _id: new mongoose.Types.ObjectId(noteId),
+            owner: new mongoose.Types.ObjectId(userId)
+        });
+        return noteId
     }
 }

@@ -12,11 +12,14 @@ export class UserService {
         try {
             const userWithEmail = await this.getByEmail(user.email);
             if (userWithEmail) {
-                throw new ProjectError({statusCode: 409, message: 'Email already exists.' });
+                throw new ProjectError({
+                    statusCode: 409,
+                    message: 'Email already exists.'
+                });
             }
             return this.create(user);
-        } catch(err) {
-            throw err
+        } catch (err) {
+            throw err;
         }
     }
 
@@ -24,22 +27,29 @@ export class UserService {
         try {
             const userWithEmail = await this.getByEmail(user.email);
             if (userWithEmail == null) {
-                throw new ProjectError({statusCode: 404, message: 'Invalid login' });
+                throw new ProjectError({
+                    statusCode: 404,
+                    message: 'Invalid login'
+                });
             }
 
-            const passwordMatches = bcrypt.compareSync(user.password, userWithEmail.password);
+            const passwordMatches = bcrypt.compareSync(
+                user.password,
+                userWithEmail.password
+            );
 
             if (!passwordMatches) {
-                throw new ProjectError({statusCode: 401, message: 'Invalid login' });
-
+                throw new ProjectError({
+                    statusCode: 401,
+                    message: 'Invalid login'
+                });
             }
-            const accessToken = this.createAccessToken(userWithEmail)
+            const accessToken = this.createAccessToken(userWithEmail);
 
-            return accessToken
-        } catch(err) {
-            throw err
+            return accessToken;
+        } catch (err) {
+            throw err;
         }
-        
     }
 
     private async create(user: Partial<IUser>) {
@@ -56,7 +66,10 @@ export class UserService {
             );
             return accessToken;
         } catch (error) {
-            throw new ProjectError({statusCode: 400, message: `Could not create token: ${error}`});
+            throw new ProjectError({
+                statusCode: 400,
+                message: `Could not create token: ${error}`
+            });
         }
     }
 

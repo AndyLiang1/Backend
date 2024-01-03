@@ -11,7 +11,7 @@ export class NoteController {
         this.router.use(authMiddleware)
         this.router.get('/notes', this.getAll.bind(this));
         this.router.get('/notes/:id', this.getOne.bind(this));
-        this.router.post('/notes/:id', this.create.bind(this));
+        this.router.post('/notes', this.create.bind(this));
         this.router.put('/notes/:id', this.update.bind(this));
         this.router.delete('/notes/:id', this.delete.bind(this));
         this.router.post('/notes/:id/share', this.share.bind(this));
@@ -25,7 +25,7 @@ export class NoteController {
     private async getAll(req: any, res: express.Response, next: express.NextFunction) {
         try {
             const userId = req.userId
-            const response = services.noteService.getAll(userId)
+            const response = await services.noteService.getAll(userId)
             res.status(200).json(response);
         } catch (err) {
             next(err)
@@ -36,19 +36,20 @@ export class NoteController {
         try {
             const userId = req.userId
             const noteId = req.params.id
-            const response = services.noteService.getOne(userId, noteId)
+            const response = await services.noteService.getOne(userId, noteId)
             res.status(200).json(response);
         } catch (err) {
             next(err)
         }
     }
+    
     private async create(req: any, res: express.Response, next: express.NextFunction) {
         try {
             const userId = req.userId
-            const noteContents = req.body;
+            const noteContents = req.body.message;
             const note: Partial<INote> = {
                 message: noteContents,
-                owner: userId
+                owner: userId,
             } 
             const response = await services.noteService.create(note);
             res.status(200).json(response);
@@ -59,7 +60,7 @@ export class NoteController {
     private async update(req: any, res: express.Response, next: express.NextFunction) {
         try {
             const userId = req.userId
-            const noteId = req.body.id
+            const noteId = req.params.id
             const noteContents = req.body.message;
             const note: Partial<INote> = {
                 message: noteContents,
@@ -84,7 +85,7 @@ export class NoteController {
     private async share(req: any, res: express.Response, next: express.NextFunction) {
         try {
             const NoteData = req.body;
-            const response = await services.noteService.delete(NoteData);
+            const response = 'await services.noteService.delete(NoteData)';
             res.status(200).json(response);
         } catch (err) {
             next(err)
@@ -94,7 +95,7 @@ export class NoteController {
     private async search(req: any, res: express.Response, next: express.NextFunction) {
         try {
             const NoteData = req.body;
-            const response = await services.noteService.delete(NoteData);
+            const response = 'await services.noteService.delete(NoteData);'
             res.status(200).json(response);
         } catch (err) {
             next(err)

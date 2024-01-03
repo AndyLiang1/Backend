@@ -23,7 +23,7 @@ export class UserController {
                 email: req.body.email as string,
                 password: hashedPassword
             };
-        
+            
             await services.userService.signup(userToCreate as IUser);
             res.status(200).json('User created successfully!');
         } catch (err) {
@@ -37,7 +37,7 @@ export class UserController {
             const response = await services.userService.login(userData);
             res.status(200).json(response);
         } catch (err) {
-            next(err)
+           next(err)
         }
     }
 }

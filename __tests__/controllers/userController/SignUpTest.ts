@@ -73,8 +73,7 @@ describe('api/auth/signup test', () => {
             .post(ENDPOINT)
             .send(testUser2)
             .expect(409)
-
-        expect(res.body).toEqual("Email already exists.")
+        expect(res.body).toBe("Error: Email already exists.")
         
     })
 })

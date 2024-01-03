@@ -1,12 +1,12 @@
-import {UserModel} from '../models/User';
+import { UserModel } from '../models/User';
 import { UserRepo } from '../repositories/UserRepo';
 import { UserService } from './UserService';
 
-const userRepo = new UserRepo(UserModel)
+const userRepo = new UserRepo(UserModel);
 const userService = new UserService(userRepo);
 
 const services = {
-    userService,
+    userService
 };
 
-export default services
+export default services;
